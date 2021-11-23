@@ -9,11 +9,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
+// app.get(path, callback)
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
+  // res.render('myTemplate', myObjectContainingVariables)
   res.render("urls_index", templateVars);
 });
 
+// :shortURL ends up in req.params
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
@@ -22,17 +25,17 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello!");
+// });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
+// app.get("/urls.json", (req, res) => {
+//   res.json(urlDatabase);
+// });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+// app.get("/hello", (req, res) => {
+//   res.send("<html><body>Hello <b>World</b></body></html>\n");
+// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

@@ -9,6 +9,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
+// "if you get this path, render this template and use these variables when you're rendering"
 // app.get(path, callback)
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };

@@ -6,6 +6,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const PORT = 8080;
+const LENGTH = 6;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -36,6 +37,8 @@ app.get("/urls/new", (req, res) => {
 // a POST route to receive the form submission
 app.post("/urls", (req, res) => {
   console.log(req.body);
+  urlDatabase[generateRandomString(LENGTH)] = req.body.longURL;
+  console.log(urlDatabase);
   res.send("Ok");
 });
 

@@ -34,12 +34,12 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-// a POST route to receive the form submission
+// a POST route to receive and process the form submission
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  urlDatabase[generateRandomString(LENGTH)] = req.body.longURL;
-  console.log(urlDatabase);
-  res.send("Ok");
+  const shortURL = generateRandomString(LENGTH);
+  const longURL = req.body.longURL;
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // :shortURL ends up in req.params
@@ -49,6 +49,11 @@ app.get("/urls/:shortURL", (req, res) => {
     longURL: urlDatabase[req.params.shortURL],
   };
   res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 /**

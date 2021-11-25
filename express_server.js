@@ -54,12 +54,19 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// POST (delete) a shortURL record; sent via the Delete button on the 'My URLS' page
+// POST (delete) a URL resource; sent via the Delete button on the 'My URLS' page
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
+// POST (update) a URL resource; sent via the Submit button on the urls_show.ejs page
+app.post("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const newLongURL = req.body.newLongURL;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect("/urls");
+});
 /**
  * Returns a string of 6 random alphanumeric characters
  * @param {number} length The number of characters to be included in the returned string

@@ -5,7 +5,7 @@ const express = require("express");
 // The input field of our form will be available under `req.body.longURL`
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const generateRandomString = require("./generateRandomString");
+const { generateRandomString, isEmailAlreadyRegistered } = require("./helpers");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -18,6 +18,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
+const users = {
+  // userRandomID: {
+  //   id: "userRandomID",
+  //   email: "user@example.com",
+  //   password: "purple-monkey-dinosaur",
+  // },
+};
+
 // app.get() and app.post()
 // "if you receive an HTTP request with this HTTP method (GET, POST, etc) and this path, execute the callback. The callback may render a template and may use some variables when rendering. Or it may do other things (create, update, delete) and redirect to another resource."
 
@@ -25,7 +33,7 @@ const urlDatabase = {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies.username,
+    user: users[req.cookies.user_id],
   };
   res.render("urls_index", templateVars);
 });
@@ -34,7 +42,7 @@ app.get("/urls", (req, res) => {
 // This route definition must come before /urls/:shortURL because Express will think /urls/new is a call to that one.
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.cookies.username,
+    user: users[req.cookies.user_id],
   };
   res.render("urls_new", templateVars);
 });
@@ -44,7 +52,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies.username,
+    user: users[req.cookies.user_id],
   };
   res.render("urls_show", templateVars);
 });
@@ -58,7 +66,7 @@ app.get("/u/:shortURL", (req, res) => {
 // GET registration page
 app.get("/register", (req, res) => {
   const templateVars = {
-    username: req.cookies.username,
+    user: users[req.cookies.user_id],
   };
   res.render("register", templateVars);
 });
@@ -85,6 +93,22 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+// Register a new user
+app.post("/register", (req, res) => {
+  const user_id = generateRandomString(LENGTH);
+  const email = req.body.email;
+  const password = req.body.password;
+  if (!email || !password || isEmailAlreadyRegistered(email, users)) {
+    return res.sendStatus(400);
+  }
+  users[user_id] = {
+    id: user_id,
+    email: email,
+    password: password,
+  };
+  res.cookie("user_id", users[user_id]["id"]);
+  res.redirect("/urls");
+});
 // CREATE a cookie with the key `username` (using POST method); redirect to /urls
 app.post("/login", (req, res) => {
   // get username value sent by POST

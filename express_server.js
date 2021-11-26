@@ -1,4 +1,3 @@
-const generateRandomString = require("./generateRandomString");
 const express = require("express");
 // body-parser library
 // converts the request body from a Buffer to a string that we can read.
@@ -6,6 +5,7 @@ const express = require("express");
 // The input field of our form will be available under `req.body.longURL`
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const generateRandomString = require("./generateRandomString");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -25,7 +25,7 @@ const urlDatabase = {
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    username: req.cookies.username,
   };
   res.render("urls_index", templateVars);
 });
@@ -34,7 +34,7 @@ app.get("/urls", (req, res) => {
 // This route definition must come before /urls/:shortURL because Express will think /urls/new is a call to that one.
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    username: req.cookies.username,
   };
   res.render("urls_new", templateVars);
 });
@@ -55,7 +55,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// POST from the form on the 'Create New URL' page
+// CREATE a new URL from the form on the 'Create New URL' page (using POST method)
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(LENGTH);
   const longURL = req.body.longURL;
@@ -63,13 +63,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-// POST (delete) a URL resource; sent via the Delete button on the 'My URLS' page
-app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
-});
-
-// POST (update) a URL resource; sent via the Submit button on the urls_show.ejs page
+// UPDATE a URL using the Submit button on the urls_show.ejs page (using POST method)
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const newLongURL = req.body.newLongURL;
@@ -77,13 +71,20 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 });
 
-// POST a username; set cookie named `username` to value submitted in request body; redirect to /urls
+// DELETE a URL from the Delete button on the 'My URLS' page (using POST METHOD)
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+// CREATE a cookie with the key `username` (using POST method); redirect to /urls
 app.post("/login", (req, res) => {
   // get username value sent by POST
   res.cookie("username", req.body.username);
   res.redirect("/urls");
 });
 
+// Clear the cookie with the key `username`
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");

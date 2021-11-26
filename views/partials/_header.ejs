@@ -13,9 +13,9 @@
             <a class="nav-link" href="/urls/new" >Create New URL</a>
           </li>
         </ul>
-            <% if(username) { %>
+            <% if(user) { %>
               <form class="form-inline my-2 my-md-0" action="/logout" method="post">
-                <p style="margin-bottom: 0; padding-right: 1rem;">Logged in as: <%= username %></p>
+                <p style="margin-bottom: 0; padding-right: 1rem;">Logged in as: <%= user.email %></p>
                 <button class="btn btn-outline-dark" type="submit">Logout</button>
               </form>
             <% } else { %>

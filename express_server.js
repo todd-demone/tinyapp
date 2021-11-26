@@ -55,6 +55,14 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+// GET registration page
+app.get("/register", (req, res) => {
+  const templateVars = {
+    username: req.cookies.username,
+  };
+  res.render("register", templateVars);
+});
+
 // CREATE a new URL from the form on the 'Create New URL' page (using POST method)
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(LENGTH);

@@ -15,4 +15,13 @@ const generateRandomString = function (length) {
   return result;
 };
 
-module.exports = generateRandomString;
+const isEmailAlreadyRegistered = function (email, users) {
+  for (user_id in users) {
+    if (users[user_id]["email"] === email) {
+      return true;
+    }
+  }
+  return false;
+};
+
+module.exports = { generateRandomString, isEmailAlreadyRegistered };

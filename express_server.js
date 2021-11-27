@@ -71,6 +71,14 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
+// GET login page
+app.get("/login", (req, res) => {
+  const templateVars = {
+    user: users[req.cookies.user_id],
+  };
+  res.render("login", templateVars);
+});
+
 // CREATE a new URL from the form on the 'Create New URL' page (using POST method)
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(LENGTH);

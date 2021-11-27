@@ -5,7 +5,7 @@ const express = require("express");
 // The input field of our form will be available under `req.body.longURL`
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const { generateRandomString, isEmailAlreadyRegistered } = require("./helpers");
+const { generateRandomString, getUserIdUsingEmail } = require("./helpers");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -29,7 +29,6 @@ const users = {
 // app.get() and app.post()
 // "if you receive an HTTP request with this HTTP method (GET, POST, etc) and this path, execute the callback. The callback may render a template and may use some variables when rendering. Or it may do other things (create, update, delete) and redirect to another resource."
 
-// GET the 'My URLS' home page - render a list of shortened websites.
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -38,7 +37,6 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// GET the 'Create New URL' page
 // This route definition must come before /urls/:shortURL because Express will think /urls/new is a call to that one.
 app.get("/urls/new", (req, res) => {
   const templateVars = {
@@ -47,7 +45,6 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-// GET the page for a specific shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
@@ -57,13 +54,12 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-// GET this resource and redirect to the longURL
+// Redirect to the longURL
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
-// GET registration page
 app.get("/register", (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],
@@ -71,7 +67,6 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
-// GET login page
 app.get("/login", (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],
@@ -79,7 +74,7 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars);
 });
 
-// CREATE a new URL from the form on the 'Create New URL' page (using POST method)
+// CREATE a new URL
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(LENGTH);
   const longURL = req.body.longURL;
@@ -87,7 +82,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-// UPDATE a URL using the Submit button on the urls_show.ejs page (using POST method)
+// UPDATE a URL
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const newLongURL = req.body.newLongURL;
@@ -95,38 +90,42 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 });
 
-// DELETE a URL from the Delete button on the 'My URLS' page (using POST METHOD)
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
-// Register a new user
 app.post("/register", (req, res) => {
-  const user_id = generateRandomString(LENGTH);
-  const email = req.body.email;
-  const password = req.body.password;
-  if (!email || !password || isEmailAlreadyRegistered(email, users)) {
+  const inputEmail = req.body.email;
+  const inputPassword = req.body.password;
+  if (!inputEmail || !inputPassword || getUserIdUsingEmail(inputEmail, users)) {
     return res.sendStatus(400);
   }
+  const user_id = generateRandomString(LENGTH);
   users[user_id] = {
     id: user_id,
-    email: email,
-    password: password,
+    email: inputEmail,
+    password: inputPassword,
   };
-  res.cookie("user_id", users[user_id]["id"]);
-  res.redirect("/urls");
-});
-// CREATE a cookie with the key `username` (using POST method); redirect to /urls
-app.post("/login", (req, res) => {
-  // get username value sent by POST
-  res.cookie("username", req.body.username);
+  res.cookie("user_id", user_id);
   res.redirect("/urls");
 });
 
-// Clear the cookie with the key `username`
+app.post("/login", (req, res) => {
+  const inputEmail = req.body.email;
+  const inputPassword = req.body.password;
+  const user_id = getUserIdUsingEmail(inputEmail, users);
+  if (user_id) {
+    if (inputPassword === users[user_id].password) {
+      res.cookie("user_id", user_id);
+      return res.redirect("/urls");
+    }
+  }
+  res.sendStatus(403);
+});
+
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 

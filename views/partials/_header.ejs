@@ -14,15 +14,12 @@
           </li>
         </ul>
             <% if(user) { %>
-              <form class="form-inline my-2 my-md-0" action="/logout" method="post">
-                <p style="margin-bottom: 0; padding-right: 1rem;">Logged in as: <%= user.email %></p>
-                <button class="btn btn-outline-dark" type="submit">Logout</button>
+              <form action="/logout" method="post">
+                <button class="btn btn-outline-dark type="submit">Logout</button>
               </form>
             <% } else { %>
-              <form class="form-inline my-2 my-md-0" action="/login" method="post">
-                <input class="form-control" type="text" name="username" placeholder="Username" style="width: 300px; margin-right: 1rem;">
-                <button class="btn btn-outline-dark" type="submit">Login</button>
-              </form>
+              <a class="btn btn-outline-dark" href="/register">Register</a>
+              <a class="btn btn-outline-dark" href="/login" style="margin-left: 1rem;">Login</a>
             <% } %>    
     </div>
   </nav>

@@ -23,4 +23,17 @@ const getUserIdUsingEmail = function (email, users) {
   }
 };
 
-module.exports = { generateRandomString, getUserIdUsingEmail };
+// Returns the URLs where the user_id is equal to the user_id of the logged in user.
+const urlsForUser = function (user_id, urlDatabase) {
+  const results = {};
+  const allShortURLs = Object.keys(urlDatabase);
+  const filteredShortURLs = allShortURLs.filter(
+    (shortURL) => urlDatabase[shortURL].userID === user_id
+  );
+  for (shortURL of filteredShortURLs) {
+    results[shortURL] = urlDatabase[shortURL];
+  }
+  return results;
+};
+
+module.exports = { generateRandomString, getUserIdUsingEmail, urlsForUser };

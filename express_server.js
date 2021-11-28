@@ -3,6 +3,7 @@ const express = require("express");
 // converts the request body from a Buffer to a string that we can read.
 // It will then add a JS object to the `req` object under the  key `body`.
 // The input field of our form will be available under `req.body.longURL`
+const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { generateRandomString, getUserIdUsingEmail } = require("./helpers");
@@ -25,7 +26,7 @@ const users = {
   // userRandomID: {
   //   id: "userRandomID",
   //   email: "user@example.com",
-  //   password: "purple-monkey-dinosaur",
+  //   password: "hashed-password",
   // },
 };
 
@@ -72,17 +73,22 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const user_id = req.cookies.user_id;
-  if (user_id === urlDatabase[req.params.shortURL].userID) {
+  const inputURL = req.params.shortURL;
+  const cookie = req.cookies.user_id;
+  if (
+    inputURL in urlDatabase &&
+    cookie &&
+    cookie === urlDatabase[inputURL].userID
+  ) {
     const templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL].longURL,
-      user: users[req.cookies.user_id],
+      shortURL: inputURL,
+      longURL: urlDatabase[inputURL].longURL,
+      user: users[cookie],
     };
     return res.render("urls_show", templateVars);
   }
   res.send(
-    '<p>You need to <a href="/login">log in</a> or <a href="/register">register</a> before you can see this page</p>'
+    '<p>Only the registered user can view or edit this url.</p><p>Please see <a href="/login">log in</a> or <a href="/register">register</a> page.</p>'
   );
 });
 
@@ -124,7 +130,7 @@ app.post("/urls/:shortURL", (req, res) => {
     urlDatabase[shortURL] = { longURL: newLongURL, userID: user_id };
     return res.redirect("/urls");
   }
-  res.send("<p>Only the registered user can edit this url.</p>");
+  res.send("<p>Only the registered user can view or edit this url.</p>");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -147,8 +153,9 @@ app.post("/register", (req, res) => {
   users[user_id] = {
     id: user_id,
     email: inputEmail,
-    password: inputPassword,
+    password: bcrypt.hashSync(inputPassword, 10),
   };
+  console.log(users);
   res.cookie("user_id", user_id);
   res.redirect("/urls");
 });
@@ -158,7 +165,8 @@ app.post("/login", (req, res) => {
   const inputPassword = req.body.password;
   const user_id = getUserIdUsingEmail(inputEmail, users);
   if (user_id) {
-    if (inputPassword === users[user_id].password) {
+    const hashedPassword = users[user_id].password;
+    if (bcrypt.compareSync(inputPassword, hashedPassword)) {
       res.cookie("user_id", user_id);
       return res.redirect("/urls");
     }

@@ -59,8 +59,6 @@ const urlsForUser = function (user_id) {
   return results;
 };
 
-console.log(urlsForUser("aJ48lW"));
-
 // This route definition must come before /urls/:shortURL because Express will think /urls/new is a call to that one.
 app.get("/urls/new", (req, res) => {
   const user_id = req.cookies.user_id;
@@ -75,7 +73,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const user_id = req.cookies.user_id;
-  if (user_id) {
+  if (user_id === urlDatabase[req.params.shortURL].userID) {
     const templateVars = {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
@@ -120,15 +118,23 @@ app.post("/urls", (req, res) => {
 // UPDATE a URL
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const newLongURL = req.body.newLongURL;
   const user_id = req.cookies.user_id;
-  urlDatabase[shortURL] = { longURL: newLongURL, userID: user_id };
-  res.redirect("/urls");
+  if (urlDatabase[shortURL].userID === user_id) {
+    const newLongURL = req.body.newLongURL;
+    urlDatabase[shortURL] = { longURL: newLongURL, userID: user_id };
+    return res.redirect("/urls");
+  }
+  res.send("<p>Only the registered user can edit this url.</p>");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  const shortURL = req.params.shortURL;
+  const user_id = req.cookies.user_id;
+  if (urlDatabase[shortURL].userID === user_id) {
+    delete urlDatabase[shortURL];
+    return res.redirect("/urls");
+  }
+  res.send("<p>Only the registered user can delete this url.</p>");
 });
 
 app.post("/register", (req, res) => {
@@ -162,7 +168,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.listen(PORT, () => {

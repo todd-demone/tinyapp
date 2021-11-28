@@ -17,6 +17,7 @@ const urlDatabase = {
   // b2xVn2: "http://www.lighthouselabs.ca",
   // "9sm5xK": "http://www.google.com",
   b6UTxQ: { longURL: "http://www.tsn.ca", userID: "aJ48lW" },
+  xyz789: { longURL: "https://www.google.ca", userID: "abc123" },
   i3B0Gr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
 };
 
@@ -32,17 +33,37 @@ const users = {
 // "if you receive an HTTP request with this HTTP method (GET, POST, etc) and this path, execute the callback. The callback may render a template and may use some variables when rendering. Or it may do other things (create, update, delete) and redirect to another resource."
 
 app.get("/urls", (req, res) => {
-  const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies.user_id],
-  };
-  res.render("urls_index", templateVars);
+  const user_id = req.cookies.user_id;
+  if (user_id) {
+    const templateVars = {
+      urls: urlsForUser(user_id),
+      user: users[req.cookies.user_id],
+    };
+    return res.render("urls_index", templateVars);
+  }
+  res.send(
+    '<p>You need to <a href="/login">log in</a> or <a href="/register">register</a> before you can see this page</p>'
+  );
 });
+
+// Returns the URLs where the user_id is equal to the user_id of the logged in user.
+const urlsForUser = function (user_id) {
+  const results = {};
+  const allShortURLs = Object.keys(urlDatabase);
+  const filteredShortURLs = allShortURLs.filter(
+    (shortURL) => urlDatabase[shortURL].userID === user_id
+  );
+  for (shortURL of filteredShortURLs) {
+    results[shortURL] = urlDatabase[shortURL];
+  }
+  return results;
+};
+
+console.log(urlsForUser("aJ48lW"));
 
 // This route definition must come before /urls/:shortURL because Express will think /urls/new is a call to that one.
 app.get("/urls/new", (req, res) => {
   const user_id = req.cookies.user_id;
-  console.log(user_id);
   if (user_id) {
     const templateVars = {
       user: users[user_id],
@@ -53,12 +74,18 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[req.cookies.user_id],
-  };
-  res.render("urls_show", templateVars);
+  const user_id = req.cookies.user_id;
+  if (user_id) {
+    const templateVars = {
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL].longURL,
+      user: users[req.cookies.user_id],
+    };
+    return res.render("urls_show", templateVars);
+  }
+  res.send(
+    '<p>You need to <a href="/login">log in</a> or <a href="/register">register</a> before you can see this page</p>'
+  );
 });
 
 // Redirect to the longURL

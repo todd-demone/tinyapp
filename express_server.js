@@ -91,13 +91,13 @@ app.post("/logout", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const userIDCookie = req.session.userID;
+  if (!userIDCookie) {
+    return res.status(401).redirect("/login");
+  }
   const templateVars = {
     urls: urlsForUser(userIDCookie, urlDatabase),
     user: users[userIDCookie],
   };
-  if (!userIDCookie) {
-    return res.status(401).redirect("/login");
-  }
   res.render("urls_index", templateVars);
 });
 
@@ -130,11 +130,6 @@ app.post("/urls", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const inputURL = req.params.shortURL;
   const userIDCookie = req.session.userID;
-  const templateVars = {
-    shortURL: inputURL,
-    longURL: urlDatabase[inputURL].longURL,
-    user: users[userIDCookie],
-  };
   if (!(inputURL in urlDatabase)) {
     return res.status(404).render("error404");
   }
@@ -144,6 +139,11 @@ app.get("/urls/:shortURL", (req, res) => {
   if (userIDCookie !== urlDatabase[inputURL].userID) {
     return res.status(403).render("error403");
   }
+  const templateVars = {
+    shortURL: inputURL,
+    longURL: urlDatabase[inputURL].longURL,
+    user: users[userIDCookie],
+  };
   res.render("urls_show", templateVars);
 });
 

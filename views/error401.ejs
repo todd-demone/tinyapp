@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--  Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>401 - Unauthorized</title>
+</head>
+<body>
+  <%- include("partials/_header_errors") %>
+  <main style="margin: 1rem;">
+    <!-- <h1 class="h3 mb-3">Authentication Error</h1>
+    <p>You are not authenticated, therefore you cannot access this resource.</p> -->
+    <h1 class="h3 mb-3">Incorrect Login Details</h1>
+    <p>Incorrect username or password. Please return to <a href="/login">Login</a> if you entered your login details incorrectly. If you don't have an account, please <a href="/register">Register</a> for a new account.
+  </main>
+</body>
+</html>

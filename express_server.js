@@ -57,9 +57,9 @@ app.post("/register", (req, res) => {
       password: hashedPassword,
     };
     req.session.user_id = user_id;
-    res.redirect("/urls");
+    return res.redirect("/urls");
   }
-  return res.sendStatus(400);
+  res.sendStatus(400);
 });
 
 app.get("/login", (req, res) => {
@@ -124,7 +124,6 @@ app.get("/urls/:shortURL", (req, res) => {
   const userIDCookie = req.session.user_id;
   if (
     inputURL in urlDatabase &&
-    userIDCookie &&
     userIDCookie === urlDatabase[inputURL].userID
   ) {
     const templateVars = {

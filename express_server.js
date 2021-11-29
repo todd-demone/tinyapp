@@ -159,7 +159,7 @@ app.post("/urls/:shortURL", (req, res) => {
     !userIDCookie ||
     userIDCookie !== urlDatabase[inputURL].userID
   ) {
-    return res.status(403);
+    return res.sendStatus(403);
   }
   urlDatabase[inputURL] = {
     longURL: newLongURL,
@@ -176,7 +176,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     !userIDCookie ||
     userIDCookie !== urlDatabase[inputURL].userID
   ) {
-    return res.status(403);
+    return res.sendStatus(403);
   }
   delete urlDatabase[inputURL];
   res.redirect("/urls");

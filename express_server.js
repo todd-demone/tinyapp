@@ -47,17 +47,19 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const inputEmail = req.body.email;
   const inputPassword = req.body.password;
-  if (!inputEmail || !inputPassword || getUserIdUsingEmail(inputEmail, users)) {
-    return res.sendStatus(400);
+  const existingUserID = getUserIdUsingEmail(inputEmail, users);
+  if (inputEmail && inputPassword && !existingUserID) {
+    const user_id = generateRandomString(LENGTH);
+    const hashedPassword = bcrypt.hashSync(inputPassword, 10);
+    users[user_id] = {
+      id: user_id,
+      email: inputEmail,
+      password: hashedPassword,
+    };
+    req.session.user_id = user_id;
+    res.redirect("/urls");
   }
-  const user_id = generateRandomString(LENGTH);
-  users[user_id] = {
-    id: user_id,
-    email: inputEmail,
-    password: bcrypt.hashSync(inputPassword, 10),
-  };
-  req.session.user_id = user_id;
-  res.redirect("/urls");
+  return res.sendStatus(400);
 });
 
 app.get("/login", (req, res) => {

@@ -92,7 +92,7 @@ app.post("/logout", (req, res) => {
 app.get("/urls", (req, res) => {
   const userIDCookie = req.session.userID;
   if (!userIDCookie) {
-    return res.status(401).redirect("/login");
+    return res.status(401).render("error401");
   }
   const templateVars = {
     urls: urlsForUser(userIDCookie, urlDatabase),
@@ -105,7 +105,7 @@ app.get("/urls/new", (req, res) => {
   const userIDCookie = req.session.userID;
   const templateVars = { user: users[userIDCookie] };
   if (!userIDCookie) {
-    return res.status(401).redirect("/login");
+    return res.redirect("/login");
   }
   res.render("urls_new", templateVars);
 });
@@ -118,7 +118,7 @@ app.post("/urls", (req, res) => {
     return res.status(400).render("error400");
   }
   if (!userIDCookie) {
-    return res.status(401).redirect("/login");
+    return res.sendStatus(401);
   }
   urlDatabase[shortURL] = {
     longURL: longURL,
@@ -134,7 +134,7 @@ app.get("/urls/:shortURL", (req, res) => {
     return res.status(404).render("error404");
   }
   if (!userIDCookie) {
-    return res.status(401).redirect("/login");
+    return res.status(401).render("error401");
   }
   if (userIDCookie !== urlDatabase[inputURL].userID) {
     return res.status(403).render("error403");

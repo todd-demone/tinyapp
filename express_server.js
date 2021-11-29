@@ -4,7 +4,7 @@ const bodyParser = require("body-parser"); // convert input to readable string i
 const cookieSession = require("cookie-session");
 const {
   generateRandomString,
-  getUserIdUsingEmail,
+  getUserByEmail,
   urlsForUser,
 } = require("./helpers");
 
@@ -47,8 +47,8 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const inputEmail = req.body.email;
   const inputPassword = req.body.password;
-  const existingUserID = getUserIdUsingEmail(inputEmail, users);
-  if (inputEmail && inputPassword && !existingUserID) {
+  const existingUser = getUserByEmail(inputEmail, users);
+  if (inputEmail && inputPassword && !existingUser) {
     const user_id = generateRandomString(LENGTH);
     const hashedPassword = bcrypt.hashSync(inputPassword, 10);
     users[user_id] = {
@@ -71,11 +71,13 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const inputEmail = req.body.email;
-  const existingUserID = getUserIdUsingEmail(inputEmail, users);
+  const existingUser = getUserByEmail(inputEmail, users);
   const inputPassword = req.body.password;
-  const hashedPassword = users[existingUserID].password;
-  if (existingUserID && bcrypt.compareSync(inputPassword, hashedPassword)) {
-    req.session.user_id = existingUserID;
+  if (
+    existingUser &&
+    bcrypt.compareSync(inputPassword, existingUser.password)
+  ) {
+    req.session.user_id = existingUser.id;
     return res.redirect("/urls");
   }
   res.sendStatus(403);
@@ -138,7 +140,7 @@ app.post("/urls/:shortURL", (req, res) => {
   const inputURL = req.params.shortURL;
   const userIDCookie = req.session.user_id;
   const newLongURL = req.body.newLongURL;
-  if (newLongURL && urlDatabase[inputURL].userID === userIDCookie) {
+  if (newLongURL && userIDCookie === urlDatabase[inputURL].userID) {
     urlDatabase[inputURL] = {
       longURL: newLongURL,
       userID: userIDCookie,

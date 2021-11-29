@@ -15,10 +15,10 @@ const generateRandomString = function (length) {
   return result;
 };
 
-const getUserIdUsingEmail = function (email, users) {
-  for (user_id in users) {
-    if (users[user_id]["email"] === email) {
-      return users[user_id].id;
+const getUserByEmail = function (email, database) {
+  for (user_id in database) {
+    if (database[user_id]["email"] === email) {
+      return database[user_id];
     }
   }
 };
@@ -36,4 +36,4 @@ const urlsForUser = function (user_id, urlDatabase) {
   return results;
 };
 
-module.exports = { generateRandomString, getUserIdUsingEmail, urlsForUser };
+module.exports = { generateRandomString, getUserByEmail, urlsForUser };

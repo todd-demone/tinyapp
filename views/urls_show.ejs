@@ -13,6 +13,8 @@
       <li>Long URL: <%= longURL %></li>
       <li>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></li>
     </ul>
+    <hr/>
+    <h2 class="h5 mb-3"><strong>Edit</strong></h2>
     <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
       <div class="form-group mb-3">
         <label for="newLongURL">New URL:</label>

@@ -226,15 +226,6 @@ app.post("/login", (req, res) => {
     };
     res.status(403).render("error", templateVars);
   }
-  // } else {
-  //   // email or password are empty
-  //   const templateVars = {
-  //     user: users[req.session.userID],
-  //     code: 400,
-  //     message: "Email or password are empty. Please try again.",
-  //   };
-  //   res.status(400).render("error", templateVars);
-  // }
 });
 
 app.post("/logout", (req, res) => {

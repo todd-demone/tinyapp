@@ -7,7 +7,21 @@
 </head>
 <body>
   <%- include('partials/_header') %>
-  <div class="card text-center">
+  <main style="margin: 1rem;">
+    <h1 class="h3 mb-3"><strong>TinyURL Details</strong></h1>
+    <ul>
+      <li>Long URL: <%= longURL %></li>
+      <li>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></li>
+    </ul>
+    <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
+      <div class="form-group mb-3">
+        <label for="newLongURL">New URL:</label>
+        <input class="form-control" type="text" name="newLongURL" placeholder="http://" style="width: 300px; margin: 1em;">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </main>
+  <!-- <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
       <h5 class="card-title">TinyURL for: <%= longURL %></h5>
@@ -23,7 +37,7 @@
        </div>
      </form>
     </div>
-  </div>
+  </div> -->
 
  <!-- <div class="card text-center">
    <div class="card-header"></div>

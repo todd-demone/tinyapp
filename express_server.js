@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser"); // convert input to readable string in req.body
 const cookieSession = require("cookie-session");
+const methodOverride = require('method-override');
 const {
   generateRandomString,
   getUserByEmail,
@@ -16,6 +17,7 @@ app.use(
     keys: ["key1", "key2"],
   })
 );
+app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
 
 const PORT = 8080;
@@ -105,7 +107,7 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 // PUT /urls/:shortURL -> updates a specific URL
-app.post("/urls/:shortURL", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
   // User is not logged in
   if (!req.session.userID) {
     return res.sendStatus(401);
@@ -133,7 +135,7 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 // DELETE /urls/:shortURL/delete => deletes a specific URL
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL/delete", (req, res) => {
   // User is  not logged in
   if (!req.session.userID) {
     return res.sendStatus(401);

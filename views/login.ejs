@@ -13,7 +13,7 @@
   <%- include("partials/_header"); %>
   <main style="margin: 1rem;">
     <h1 class="h3 mb-3"><strong>Login</strong></h1>
-    <form action="/login" method="post">
+    <form class="mb-3" action="/login" method="post">
       <div class="form-group mb-3" style="width: 300px;">
         <label for="inputEmail">Email address</label>
         <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Enter email" required autofocus>
@@ -24,6 +24,7 @@
       </div>
       <button class="btn btn-primary" type="submit">Login</button>
     </form>
+    <p>Don't have an account? <a href="/register">Create a TinyURL Account</a></p>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

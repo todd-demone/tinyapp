@@ -10,7 +10,7 @@
   <main style="margin: 1rem;">
     <h1 class="h3 mb-3"><strong>TinyURL Details</strong></h1>
     <ul>
-      <li>Long URL: <%= longURL %></li>
+      <li>Long URL: <%= urlData.longURL %></li>
       <li>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></li>
     </ul>
     <hr/>
@@ -32,13 +32,13 @@
       </thead>
       <tbody>
         <tr>
-          <td><%= totalVisits %></td>
-          <td><%= visitorIDs.length %></td>
+          <td><%= urlData.visitLog.length %></td>
+          <td><%= urlData.visitorIDs.length %></td>
         </tr>
       </tbody>
     </table>
     <h2 class="h5 mb-3"><strong>Visit Log</strong></h1>
-      <table class="table col-md-4">
+      <table class="table">
         <thead>
           <tr>
             <th scope="col">Date</th>
@@ -46,10 +46,12 @@
           </tr>
         </thead>
         <tbody>
+         <% for (const visit of urlData.visitLog) { %>
           <tr>
-            <td><%= totalVisits %></td>
-            <td><%= visitorIDs.length %></td>
+            <td><%= visit.timestamp %></td>
+            <td><%= visit.visitorID %></td>
           </tr>
+          <% } %>
         </tbody>
       </table>
   </main>

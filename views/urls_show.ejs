@@ -14,7 +14,7 @@
       <li>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></li>
     </ul>
     <hr/>
-    <h2 class="h5 mb-3"><strong>Edit</strong></h2>
+    <h2 class="h4 mb-3"><strong>Edit</strong></h2>
     <form class="form-inline" action="/urls/<%= shortURL %>?_method=PUT" method="POST">
       <div class="form-group mb-5">
         <label for="longURL">New URL:</label>
@@ -22,7 +22,7 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>
     </form>
-    <h2 class="h5 mb-3"><strong>Visitor Data</strong></h1>
+    <h2 class="h4 mb-3"><strong>Visitor Data</strong></h1>
     <table class="table col-md-4">
       <thead>
         <tr>
@@ -37,12 +37,12 @@
         </tr>
       </tbody>
     </table>
-    <h2 class="h5 mb-3"><strong>Visit Log</strong></h1>
+    <h2 class="h4 mb-3"><strong>Visit Log</strong></h1>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">Date</th>
-            <th scope="col">visitorID</th>
+            <th scope="col">Visitor ID</th>
           </tr>
         </thead>
         <tbody>

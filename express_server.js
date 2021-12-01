@@ -71,7 +71,6 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: req.session.userID,
-    totalVisits: 0,
     visitorIDs: [],
     visitLog: [],
   };
@@ -104,10 +103,6 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     urlData: urlDatabase[req.params.shortURL],
-    // longURL: urlDatabase[req.params.shortURL].longURL,
-    // totalVisits: urlDatabase[req.params.shortURL].totalVisits,
-    // visitorIDs: urlDatabase[req.params.shortURL].visitorIDs,
-    // visitLog: urlDatabase[req.params.shortURL].visitLog,
     user: users[req.session.userID],
   };
   res.render("urls_show", templateVars);
@@ -169,8 +164,6 @@ app.get("/u/:shortURL", (req, res) => {
     };
     return res.status(404).render("error", templateVars);
   }
-  // increment total visits to this URL
-  urlDatabase[shortURL].totalVisits++;
   
   // check if visitor has visited this URL before; if not, assign a unique cookie for this URL
   if (!req.session.visitorIDs) {

@@ -24,9 +24,7 @@ const generateRandomString = function() {
  */
 const getUserByEmail = function(email, database) {
   for (const userID in database) {
-    if (database[userID].email === email) {
-      return database[userID];
-    }
+    if (database[userID].email === email) return database[userID];
   }
 };
 
@@ -39,9 +37,7 @@ const getUserByEmail = function(email, database) {
 const urlsForUser = function(userID, urlDatabase) {
   const results = {};
   const allShortURLs = Object.keys(urlDatabase);
-  const filteredShortURLs = allShortURLs.filter(
-    (shortURL) => urlDatabase[shortURL].userID === userID
-  );
+  const filteredShortURLs = allShortURLs.filter( shortURL => urlDatabase[shortURL].userID === userID);
   for (const shortURL of filteredShortURLs) {
     results[shortURL] = urlDatabase[shortURL];
   }

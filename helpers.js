@@ -3,7 +3,8 @@
  * @param {number} length The number of characters to be included in the returned string.
  * @returns {string} 6 random alphanumeric characters [A-Za-z0-9].
  */
-const generateRandomString = function(length) {
+const generateRandomString = function() {
+  const length = 6;
   const CHARACTERS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = CHARACTERS.length;

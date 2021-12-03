@@ -37,7 +37,9 @@ const getUserByEmail = (email, users) => {
 const urlsForUser = (userID, urlDatabase) => {
   const results = {};
   const allShortURLs = Object.keys(urlDatabase);
-  const filteredShortURLs = allShortURLs.filter( shortURL => urlDatabase[shortURL].userID === userID);
+  const filteredShortURLs = allShortURLs.filter(
+    (shortURL) => urlDatabase[shortURL].userID === userID
+  );
   for (const shortURL of filteredShortURLs) {
     results[shortURL] = urlDatabase[shortURL];
   }

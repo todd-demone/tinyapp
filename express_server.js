@@ -1,13 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
-const methodOverride = require('method-override');
+const methodOverride = require("method-override");
 
-const getLoggedInUser = require('./middleware/getLoggedInUser');
+const getLoggedInUser = require("./middleware/getLoggedInUser");
 
-const userRouter = require('./routers/userRouter');
-const urlRouter = require('./routers/urlRouter');
-const uRouter = require('./routers/uRouter');
+const userRouter = require("./routers/userRouter");
+const urlRouter = require("./routers/urlRouter");
+const uRouter = require("./routers/uRouter");
 
 const app = express();
 const port = 8080;
@@ -20,7 +20,7 @@ app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({ name: "session", keys: ["key1", "key2"] }));
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
 
 app.use(getLoggedInUser(templateVars, users));
 

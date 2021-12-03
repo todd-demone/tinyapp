@@ -1,12 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
-const { generateRandomString, getUserByEmail } = require('../helpers');
+const { generateRandomString, getUserByEmail } = require("../helpers");
 
 const userRouter = (templateVars, users) => {
-  
   router.get("/register", (req, res) => {
     if (templateVars.user) return res.redirect("/urls");
     res.render("register", templateVars);
@@ -15,10 +14,11 @@ const userRouter = (templateVars, users) => {
   router.post("/register", (req, res) => {
     const { email, password } = req.body;
     const user = getUserByEmail(email, users);
-    
+
     const errors = [];
     if (user) errors.push({ msg: "This account already exists." });
-    if (!email || !password) errors.push({ msg: "Email or password are empty." });
+    if (!email || !password)
+      errors.push({ msg: "Email or password are empty." });
     if (errors.length) {
       templateVars.errors = errors;
       return res.status(400).render("register", templateVars);
@@ -26,7 +26,7 @@ const userRouter = (templateVars, users) => {
     const userID = generateRandomString();
     const visitorID = generateRandomString();
     const hashedPassword = bcrypt.hashSync(password, 10);
-    
+
     users[userID] = {
       id: userID,
       email,
@@ -46,10 +46,12 @@ const userRouter = (templateVars, users) => {
   router.post("/login", (req, res) => {
     const { email, password } = req.body;
     const user = getUserByEmail(email, users);
-    
+
     const errors = [];
-    if (!user) errors.push({ msg: "You have entered an invalid email address."} );
-    else if (!(bcrypt.compareSync(password, user.password))) errors.push({ msg: "Password is incorrect."} );
+    if (!user)
+      errors.push({ msg: "You have entered an invalid email address." });
+    else if (!bcrypt.compareSync(password, user.password))
+      errors.push({ msg: "Password is incorrect." });
     if (errors.length) {
       templateVars.errors = errors;
       return res.status(403).render("login", templateVars);
@@ -58,9 +60,8 @@ const userRouter = (templateVars, users) => {
     req.session.userID = user.id;
     req.session.visitorID = user.visitorID;
     res.redirect("/urls");
-  
   });
-  
+
   router.post("/logout", (req, res) => {
     req.session = null;
     res.redirect("/users/login");

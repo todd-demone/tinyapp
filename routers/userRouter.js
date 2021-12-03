@@ -17,7 +17,7 @@ const userRouter = (users) => {
     const user = getUserByEmail(email, users);
     if (!email || !password) {
       const templateVars = {
-        user: users[req.session.userID],
+        user,
         code: 400,
         message: "Email or password are empty. Please try again.",
       };
@@ -25,7 +25,7 @@ const userRouter = (users) => {
     }
     if (user) {
       const templateVars = {
-        user: user.id,
+        user,
         code: 400,
         message: "This account already exists. Please login.",
       };
@@ -58,7 +58,7 @@ const userRouter = (users) => {
       return res.redirect("/urls");
     }
     const templateVars = {
-      user: users[req.session.userID],
+      user,
       code: 403,
       message: "Email or password are incorrect. Please try again, or register if you don't have an account.",
     };

@@ -39,8 +39,8 @@ const urlRouter = (templateVars, users, urlDatabase) => {
     if (!templateVars.user) return res.redirect("/users/login");
     if (!(shortURL in urlDatabase)) return res.status(404).render("error404", templateVars);
     if (templateVars.user.id !== urlDatabase[shortURL].userID) {
-      templateVars[code] = 403;
-      templateVars[message] = "You are not authorized to access this resource.";
+      templateVars.code = 403;
+      templateVars.message = "You are not authorized to access this resource.";
       return res.status(403).render("error", templateVars);
     }
     templateVars.shortURL = shortURL;

@@ -25,8 +25,8 @@ app.use(methodOverride('_method'));
 app.use(getLoggedInUser(templateVars, users));
 
 app.use("/users", userRouter(templateVars, users));
-app.use("/urls", urlRouter(templateVars, users, urlDatabase));
-app.use("/u", uRouter(templateVars, users, urlDatabase));
+app.use("/urls", urlRouter(templateVars, urlDatabase));
+app.use("/u", uRouter(templateVars, urlDatabase));
 
 app.use((req, res, next) => {
   res.status(404);

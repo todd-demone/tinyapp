@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { urlsForUser, generateRandomString } = require("../helpers");
 
-const urlRouter = (templateVars, users, urlDatabase) => {
+const urlRouter = (templateVars, urlDatabase) => {
 
   router.get("/", (req, res) => {
     const { userID } = req.session;

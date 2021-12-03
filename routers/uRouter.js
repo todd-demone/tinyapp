@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { generateRandomString } = require('../helpers');
 
-const uRouter = (templateVars, users, urlDatabase) => {
+const uRouter = (templateVars, urlDatabase) => {
   
   router.get("/:shortURL", (req, res) => {
     const { shortURL } = req.params;

@@ -28,15 +28,10 @@ app.use("/users", userRouter(templateVars, users));
 app.use("/urls", urlRouter(templateVars, users, urlDatabase));
 app.use("/u", uRouter(templateVars, users, urlDatabase));
 
-// catch-all for non-existing pages
-// app.get("*", (req, res) => {
-//   const templateVars = {
-//     user: users[req.session.userID],
-//     code: 404,
-//     message: "Page not found",
-//   };
-//   res.render("error", templateVars);
-// });
+app.use((req, res, next) => {
+  res.status(404);
+  res.render("error404", templateVars);
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);

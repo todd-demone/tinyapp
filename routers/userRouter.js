@@ -15,7 +15,6 @@ const userRouter = (users) => {
   router.post("/register", (req, res) => {
     const { email, password } = req.body;
     const user = getUserByEmail(email, users);
-    
     if (!email || !password) {
       const templateVars = {
         user: users[req.session.userID],
@@ -32,7 +31,6 @@ const userRouter = (users) => {
       };
       return res.status(400).render("error", templateVars);
     }
-    
     const userID = generateRandomString();
     const hashedPassword = bcrypt.hashSync(password, 10);
     users[userID] = {
@@ -41,7 +39,6 @@ const userRouter = (users) => {
       password: hashedPassword,
       visitorIDs: {},
     };
-    
     req.session.userID = userID;
     req.session.visitorIDs = users[userID].visitorIDs;
     res.redirect("/urls");
@@ -63,8 +60,7 @@ const userRouter = (users) => {
     const templateVars = {
       user: users[req.session.userID],
       code: 403,
-      message:
-        "Email or password are incorrect. Please try again, or register if you don't have an account.",
+      message: "Email or password are incorrect. Please try again, or register if you don't have an account.",
     };
     res.status(403).render("error", templateVars);
   });

@@ -2,7 +2,7 @@
  * Returns a string of 6 random alphanumeric characters.
  * @returns {string} 6 random alphanumeric characters [A-Za-z0-9].
  */
-const generateRandomString = function() {
+const generateRandomString = () => {
   const length = 6;
   const CHARACTERS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -21,7 +21,7 @@ const generateRandomString = function() {
  * @param {object} users an object where key is the userID; value is an object with id, email and password.
  * @returns {object} a single user object.
  */
-const getUserByEmail = function(email, users) {
+const getUserByEmail = (email, users) => {
   for (const userID in users) {
     if (users[userID].email === email) return users[userID];
   }
@@ -34,7 +34,7 @@ const getUserByEmail = function(email, users) {
  * @param {object} urlDatabase a 'URLS' object; key is the shortURL; value is an object with longURL and userID.
  * @returns {object} a single URL object.
  */
-const urlsForUser = function(userID, urlDatabase) {
+const urlsForUser = (userID, urlDatabase) => {
   const results = {};
   const allShortURLs = Object.keys(urlDatabase);
   const filteredShortURLs = allShortURLs.filter( shortURL => urlDatabase[shortURL].userID === userID);

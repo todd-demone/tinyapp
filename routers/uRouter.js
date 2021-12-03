@@ -10,19 +10,19 @@ const uRouter = (templateVars, users, urlDatabase) => {
     
     if (!(shortURL in urlDatabase)) return res.status(404).render("error404", templateVars);
     
-    // assign a visitorID cookie for analytics
-    if (!req.session.visitorID) req.session.visitorIDs = {};
-    if (!(req.session.visitorIDs[shortURL])) {
+    // if not logged in, assign a visitorID cookie for analytics
+    if (!req.session.visitorID) {
       const visitorID = generateRandomString();
-      req.session.visitorIDs[shortURL] = visitorID;
-      if (templateVars.user) users[templateVars.user.id].visitorIDs[shortURL] = visitorID;
-      urlDatabase[shortURL].visitorIDs.push(visitorID);
-    }
-  
+      req.session.visitorID = visitorID;
+    } 
+    
+    // count unique visitors to this URL
+    urlDatabase[shortURL].visitorIDs.indexOf(req.session.visitorID) === -1 ? urlDatabase[shortURL].visitorIDs.push(req.session.visitorID) : null;
+      
     // log each visit (timestamp, visitorID)
     const visitDetails = {
       timestamp: new Date(),
-      visitorID: req.session.visitorIDs[shortURL],
+      visitorID: req.session.visitorID,
     };
     urlDatabase[shortURL].visitLog.push(visitDetails);
 

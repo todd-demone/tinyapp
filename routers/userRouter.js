@@ -26,15 +26,16 @@ const userRouter = (templateVars, users) => {
       return res.status(400).render("error", templateVars);
     }
     const userID = generateRandomString();
+    const visitorID = generateRandomString();
     const hashedPassword = bcrypt.hashSync(password, 10);
     users[userID] = {
       id: userID,
       email,
       password: hashedPassword,
-      visitorIDs: {},
+      visitorID,
     };
     req.session.userID = userID;
-    req.session.visitorIDs = users[userID].visitorIDs;
+    req.session.visitorID = visitorID;
     res.redirect("/urls");
   });
 
@@ -48,7 +49,7 @@ const userRouter = (templateVars, users) => {
     const user = getUserByEmail(email, users);
     if (user && password && bcrypt.compareSync(password, user.password)) {
       req.session.userID = user.id;
-      req.session.visitorIDs = user.visitorIDs;
+      req.session.visitorID = user.visitorID;
       return res.redirect("/urls");
     }
     templateVars.code = 403;

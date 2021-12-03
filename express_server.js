@@ -13,7 +13,7 @@ const app = express();
 const port = 8080;
 
 const urlDatabase = {}; // b6UTxQ: { longURL: "http://www.tsn.ca", userID: "aJ48lW", visitorIDs: [abc123, def456, ghi789], visitLog: [{ timestamp: 2021-12..., visitorID: abc123 }] },
-const users = {}; // userRandomID: { id: "userRandomID", email: "user@example.com", password: "hashed-password", visitorIDs: { shortURL1: myVisitorID1, shortURL2: myVisitorID2 } },
+const users = {}; // userRandomID: { id: "userRandomID", email: "user@example.com", password: "hashed-password", visitorID: myVisitorID },
 const templateVars = {};
 
 app.set("view engine", "ejs");

@@ -14,14 +14,14 @@
   <main style="margin: 1rem;">
     <h1 class="h3 mb-3"><strong>Login</strong></h1>
     <form class="mb-3" action="/users/login" method="post">
-      <div class="form-group mb-3" style="width: 300px;">
-        <ul class="list-group mb-2" style="list-style-type: none;">
-          <% if (errors) { %>
-            <% for (const error of errors) { %>
-            <li class="list=group-item text-danger"><%= error.msg %></li>
-            <% } %>
+      <ul class="list-group mb-2" style="list-style-type: none;">
+        <% if (errors) { %>
+          <% for (const error of errors) { %>
+          <li class="list=group-item text-danger">&#x26A0; <%= error.msg %></li>
           <% } %>
-        </ul>
+        <% } %>
+      </ul>
+      <div class="form-group mb-3" style="width: 300px;">
         <label for="inputEmail">Email address</label>
         <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Enter email" required autofocus>
       </div>

@@ -5,30 +5,24 @@ const bcrypt = require('bcrypt');
 
 const { generateRandomString, getUserByEmail } = require('../helpers');
 
-const userRouter = (users) => {
+const userRouter = (templateVars, users) => {
   
   router.get("/register", (req, res) => {
-    if (req.session.userID) return res.redirect("/urls");
-    res.render("register", { user: null });
+    if (templateVars.user) return res.redirect("/urls");
+    res.render("register", templateVars);
   });
 
   router.post("/register", (req, res) => {
     const { email, password } = req.body;
     const user = getUserByEmail(email, users);
     if (!email || !password) {
-      const templateVars = {
-        user,
-        code: 400,
-        message: "Email or password are empty. Please try again.",
-      };
+      templateVars.code = 400;
+      templateVars.message = "Email or password are empty. Please try again.";
       return res.status(400).render("error", templateVars);
     }
     if (user) {
-      const templateVars = {
-        user,
-        code: 400,
-        message: "This account already exists. Please login.",
-      };
+      templateVars.code = 400;
+      templateVars.message = "This account already exists. Please login.";
       return res.status(400).render("error", templateVars);
     }
     const userID = generateRandomString();
@@ -45,7 +39,7 @@ const userRouter = (users) => {
   });
 
   router.get("/login", (req, res) => {
-    if (req.session.userID) return res.redirect("/urls");
+    if (templateVars.user) return res.redirect("/urls");
     res.render("login", { user: null });
   });
 
@@ -57,11 +51,8 @@ const userRouter = (users) => {
       req.session.visitorIDs = user.visitorIDs;
       return res.redirect("/urls");
     }
-    const templateVars = {
-      user,
-      code: 403,
-      message: "Email or password are incorrect. Please try again, or register if you don't have an account.",
-    };
+    templateVars.code = 403;
+    templateVars.message = "Email or password are incorrect. Please try again, or register if you don't have an account.";
     res.status(403).render("error", templateVars);
   });
   

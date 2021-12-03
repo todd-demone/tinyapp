@@ -15,6 +15,13 @@
     </ul>
     <hr/>
     <h2 class="h4 mb-3"><strong>Edit</strong></h2>
+    <ul class="list-group mb-2" style="list-style-type: none;">
+      <% if (errors) { %>
+        <% for (const error of errors) { %>
+        <li class="list=group-item text-danger">&#x26A0; <%= error.msg %></li>
+        <% } %>
+      <% } %>
+    </ul>
     <form class="form-inline" action="/urls/<%= shortURL %>?_method=PUT" method="POST">
       <div class="form-group mb-5">
         <label for="longURL">New URL:</label>

@@ -1,6 +1,5 @@
 /**
  * Returns a string of 6 random alphanumeric characters.
- * @param {number} length The number of characters to be included in the returned string.
  * @returns {string} 6 random alphanumeric characters [A-Za-z0-9].
  */
 const generateRandomString = function() {
@@ -19,13 +18,14 @@ const generateRandomString = function() {
 /**
  * Lookup a user using their email address; returns the object representing that user.
  * @param {string} email the user's email address.
- * @param {object} database a 'users' object; key is the userID; value is an object with id, email and password.
+ * @param {object} users an object where key is the userID; value is an object with id, email and password.
  * @returns {object} a single user object.
  */
-const getUserByEmail = function(email, database) {
-  for (const userID in database) {
-    if (database[userID].email === email) return database[userID];
+const getUserByEmail = function(email, users) {
+  for (const userID in users) {
+    if (users[userID].email === email) return users[userID];
   }
+  return null;
 };
 
 /**

@@ -6,8 +6,9 @@ const { urlsForUser, generateRandomString } = require("../helpers");
 const urlRouter = (templateVars, users, urlDatabase) => {
 
   router.get("/", (req, res) => {
+    const { userID } = req.session;
     if (!templateVars.user) return res.redirect("/users/login");
-    templateVars.urls = urlsForUser(req.session.userID, urlDatabase);
+    templateVars.urls = urlsForUser(userID, urlDatabase);
     res.render("urls_index", templateVars);
   });
 
@@ -19,18 +20,23 @@ const urlRouter = (templateVars, users, urlDatabase) => {
   router.post("/", (req, res) => {
     const { longURL } = req.body;
     const shortURL = generateRandomString();
+
     if (!templateVars.user) return res.sendStatus(401);
-    if (!longURL) {
-      templateVars.code = 400;
-      templateVars.message = "You didn't submit a URL. Please try again.";
-      return res.status(400).render("error", templateVars);
+    
+    const errors = [];
+    if (!longURL) errors.push({ msg: "URL field cannot be empty." });
+    if (errors.length) {
+      templateVars.errors = errors;
+      return res.render("urls_new", templateVars);
     }
+
     urlDatabase[shortURL] = {
       longURL,
       userID: req.session.userID,
       visitorIDs: [],
       visitLog: [],
     };
+
     res.redirect(`/urls/${shortURL}`);
   });
 
@@ -39,12 +45,8 @@ const urlRouter = (templateVars, users, urlDatabase) => {
     
     if (!templateVars.user) return res.redirect("/users/login");
     if (!(shortURL in urlDatabase)) return res.status(404).render("error404", templateVars);
-    if (templateVars.user.id !== urlDatabase[shortURL].userID) {
-      templateVars.code = 403;
-      templateVars.message = "You are not authorized to access this resource.";
-      return res.status(403).render("error", templateVars);
-    }
-    
+    if (templateVars.user.id !== urlDatabase[shortURL].userID) return res.status(403). render("error403", templateVars)
+
     templateVars.shortURL = shortURL;
     templateVars.urlData = urlDatabase[shortURL];
     res.render("urls_show", templateVars);

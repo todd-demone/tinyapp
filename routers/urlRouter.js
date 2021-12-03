@@ -7,7 +7,14 @@ const urlRouter = (templateVars, users, urlDatabase) => {
 
   router.get("/", (req, res) => {
     const { userID } = req.session;
-    if (!templateVars.user) return res.redirect("/users/login");
+    
+    const errors = [];
+    if (!templateVars.user) errors.push({ msg: "Please login or register before trying to access URLs." });
+    if (errors.length) {
+      templateVars.errors = errors;
+      return res.render("login", templateVars);
+    }
+
     templateVars.urls = urlsForUser(userID, urlDatabase);
     res.render("urls_index", templateVars);
   });
@@ -43,7 +50,12 @@ const urlRouter = (templateVars, users, urlDatabase) => {
   router.get("/:shortURL", (req, res) => {
     const { shortURL } = req.params;
     
-    if (!templateVars.user) return res.redirect("/users/login");
+    const errors = [];
+    if (!templateVars.user) errors.push({ msg: "Please login or register before trying to access URLs." });
+    if (errors.length) {
+      templateVars.errors = errors;
+      return res.render("login", templateVars);
+    }
     if (!(shortURL in urlDatabase)) return res.status(404).render("error404", templateVars);
     if (templateVars.user.id !== urlDatabase[shortURL].userID) return res.status(403). render("error403", templateVars)
 

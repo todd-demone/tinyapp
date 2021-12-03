@@ -4,6 +4,7 @@ const router = express.Router();
 const { generateRandomString } = require('../helpers');
 
 const uRouter = (users, urlDatabase) => {
+  
   router.get("/:shortURL", (req, res) => {
     const { shortURL } = req.params;
     const userID = req.session.userID || null;

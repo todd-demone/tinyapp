@@ -1,14 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const bcrypt = require("bcrypt");
 const { urlsForUser, generateRandomString } = require("../helpers");
 
 const urlRouter = (users, urlDatabase) => {
 
   router.get("/", (req, res) => {
     if (!req.session.userID) return res.redirect("/users/login");
-    
     const templateVars = {
       urls: urlsForUser(req.session.userID, urlDatabase),
       user: users[req.session.userID],
@@ -25,7 +23,6 @@ const urlRouter = (users, urlDatabase) => {
   router.post("/", (req, res) => {
     const { longURL } = req.body;
     const shortURL = generateRandomString();
-    
     if (!req.session.userID) return res.sendStatus(401);
     if (!longURL) {
       const templateVars = {
@@ -35,7 +32,6 @@ const urlRouter = (users, urlDatabase) => {
       };
       return res.status(400).render("error", templateVars);
     }
-
     urlDatabase[shortURL] = {
       longURL: longURL,
       userID: req.session.userID,
@@ -48,14 +44,7 @@ const urlRouter = (users, urlDatabase) => {
   router.get("/:shortURL", (req, res) => {
     const { shortURL } = req.params;
     if (!req.session.userID) return res.redirect("/users/login");
-    if (!(shortURL in urlDatabase)) {
-      const templateVars = {
-        user: users[req.session.userID],
-        code: 404,
-        message: "Page not found",
-      };
-      return res.status(404).render("error", templateVars);
-    }
+    if (!(shortURL in urlDatabase)) return res.status(404).render("error404", { user: users[req.session.userID] });
     if (req.session.userID !== urlDatabase[shortURL].userID) {
       const templateVars = {
         user: users[req.session.userID],
@@ -64,7 +53,6 @@ const urlRouter = (users, urlDatabase) => {
       };
       return res.status(403).render("error", templateVars);
     }
-    
     const templateVars = {
       shortURL,
       urlData: urlDatabase[shortURL],
@@ -87,7 +75,6 @@ const urlRouter = (users, urlDatabase) => {
       };
       return res.status(400).render("error", templateVars);
     }
-
     urlDatabase[shortURL].longURL = longURL;
     res.redirect("/urls");
   });
@@ -97,7 +84,6 @@ const urlRouter = (users, urlDatabase) => {
     if (!req.session.userID) return res.sendStatus(401);
     if (!(shortURL in urlDatabase)) return res.sendStatus(404);
     if (req.session.userID !== urlDatabase[shortURL].userID) return res.sendStatus(403);
-
     delete urlDatabase[shortURL];
     res.redirect("/urls");
   });

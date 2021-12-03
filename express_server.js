@@ -26,7 +26,7 @@ app.use(getLoggedInUser(templateVars, users));
 
 app.use("/users", userRouter(templateVars, users));
 app.use("/urls", urlRouter(templateVars, users, urlDatabase));
-app.use("/u", uRouter(users, urlDatabase));
+app.use("/u", uRouter(templateVars, users, urlDatabase));
 
 // catch-all for non-existing pages
 // app.get("*", (req, res) => {

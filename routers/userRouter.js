@@ -17,8 +17,8 @@ const userRouter = (templateVars, users) => {
     const user = getUserByEmail(email, users);
     
     const errors = [];
-    if (user) errors.push({ msg: "Error - this account already exists." });
-    if (!email || !password) errors.push({ msg: "Error - email or password are empty. Please try again." });
+    if (user) errors.push({ msg: "This account already exists." });
+    if (!email || !password) errors.push({ msg: "Email or password are empty." });
     if (errors.length) {
       templateVars.errors = errors;
       return res.status(400).render("register", templateVars);
@@ -47,20 +47,18 @@ const userRouter = (templateVars, users) => {
     const { email, password } = req.body;
     const user = getUserByEmail(email, users);
     
-    if (user && password && bcrypt.compareSync(password, user.password)) {
-      req.session.userID = user.id;
-      req.session.visitorID = user.visitorID;
-      return res.redirect("/urls");
-    } 
-    
     const errors = [];
-    if (!user) errors.push({ msg: "Error - email address can't be found."} );
-    else if (!(bcrypt.compareSync(password, user.password))) errors.push({ msg: "Error - password is incorrect."} );
+    if (!user) errors.push({ msg: "You have entered an invalid email address."} );
+    else if (!(bcrypt.compareSync(password, user.password))) errors.push({ msg: "Password is incorrect."} );
     if (errors.length) {
       templateVars.errors = errors;
       return res.status(403).render("login", templateVars);
     }
-     
+
+    req.session.userID = user.id;
+    req.session.visitorID = user.visitorID;
+    res.redirect("/urls");
+  
   });
   
   router.post("/logout", (req, res) => {

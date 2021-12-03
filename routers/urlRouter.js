@@ -36,6 +36,7 @@ const urlRouter = (templateVars, users, urlDatabase) => {
 
   router.get("/:shortURL", (req, res) => {
     const { shortURL } = req.params;
+    
     if (!templateVars.user) return res.redirect("/users/login");
     if (!(shortURL in urlDatabase)) return res.status(404).render("error404", templateVars);
     if (templateVars.user.id !== urlDatabase[shortURL].userID) {
@@ -43,6 +44,7 @@ const urlRouter = (templateVars, users, urlDatabase) => {
       templateVars.message = "You are not authorized to access this resource.";
       return res.status(403).render("error", templateVars);
     }
+    
     templateVars.shortURL = shortURL;
     templateVars.urlData = urlDatabase[shortURL];
     res.render("urls_show", templateVars);
@@ -51,14 +53,18 @@ const urlRouter = (templateVars, users, urlDatabase) => {
   router.put("/:shortURL", (req, res) => {
     const { shortURL } = req.params;
     const { longURL } = req.body;
+    
     if (!templateVars.user) return res.sendStatus(401);
     if (!(shortURL in urlDatabase)) return res.sendStatus(404);
     if (templateVars.user.id !== urlDatabase[shortURL].userID) return res.sendStatus(403);
-    if (!longURL) {
-      templateVars.code = 400;
-      templateVars.message = "You didn't edit the URL. Please try again.";
-      return res.status(400).render("error", templateVars);
+    
+    const errors = [];
+    if (!longURL) errors.push({ msg: "URL field cannot be empty." });
+    if (errors.length) {
+      templateVars.errors = errors;
+      return res.render("urls_show", templateVars);
     }
+
     urlDatabase[shortURL].longURL = longURL;
     res.redirect("/urls");
   });

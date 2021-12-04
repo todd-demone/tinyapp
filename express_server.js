@@ -28,7 +28,7 @@ app.use("/urls", urlRouter(templateVars, urlDatabase));
 app.use("/u", uRouter(templateVars, urlDatabase));
 app.use("/", userRouter(templateVars, users));
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404);
   res.render("error404", templateVars);
 });

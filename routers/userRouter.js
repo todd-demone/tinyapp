@@ -64,7 +64,7 @@ const userRouter = (templateVars, users) => {
 
   router.post("/logout", (req, res) => {
     req.session = null;
-    res.redirect("/users/login");
+    res.redirect("/login");
   });
 
   return router;

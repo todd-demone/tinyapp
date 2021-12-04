@@ -22,7 +22,7 @@ const urlRouter = (templateVars, urlDatabase) => {
   });
 
   router.get("/new", (req, res) => {
-    if (!templateVars.user) return res.redirect("/users/login");
+    if (!templateVars.user) return res.redirect("/login");
     res.render("urls_new", templateVars);
   });
 
